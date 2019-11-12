@@ -1,0 +1,52 @@
+ private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                DialogResult result = MessageBox.Show("Хотите сохранить изменения?", "", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    using (var conn = new SqlConnection(ConnString))
+                    {
+                        conn.Open();
+                        if (!string.IsNullOrEmpty(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrEmpty(textBox3.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && !string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox1.Text))
+                        {
+                            SqlCommand prov = new SqlCommand("SELECT COUNT(*) FROM [dbo].[Document] WHERE [Id] = '" + textBox1.Text + "'", conn);
+                            int i = Convert.ToInt32(prov.ExecuteScalar());
+                            if (i == 1)
+                            {
+                                DateTime aDateTime = DateTime.Now;
+                                //SqlCommand f1 = new SqlCommand("SELECT Title FROM [dbo].[Document] WHERE [Id] = '" + textBox1.Text + "'", conn);
+                                //string j1 = Convert.ToString(f1.ExecuteScalar());
+                                
+                                SqlCommand com = new SqlCommand("UPDATE [dbo].[Document] SET [Date] = N'" + aDateTime + "', [Location] = N'" + textBox3.Text + "', [Title] = N'" + textBox2.Text + "'" + "WHERE [Id] = N'" + textBox1.Text + "'", conn);
+                                com.ExecuteNonQuery();
+
+                                //SqlCommand f2 = new SqlCommand("SELECT Title FROM [dbo].[Document] WHERE [Id] = '" + textBox1.Text + "'", conn);
+                                //string j2 = Convert.ToString(f2.ExecuteScalar());
+
+                              
+                                //File.Move(j1, j2);
+
+                                MessageBox.Show("Изменения сохраненны");
+                                this.Close();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Документа с таким ID не существует!");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Все поля должны быть заполнены!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+
+            }
+            
+        }
